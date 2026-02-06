@@ -1,3 +1,4 @@
+import 'package:e_mas/repos/collection.repo.dart';
 import 'package:e_mas/utils/currency.dart';
 import 'package:flutter/material.dart';
 
@@ -6,6 +7,7 @@ class GoldCardWidget extends StatelessWidget {
   final String purchaseDate;
   final int price;
   final String brand;
+  final int index;
 
   const GoldCardWidget({
     super.key,
@@ -13,6 +15,7 @@ class GoldCardWidget extends StatelessWidget {
     this.purchaseDate = '',
     this.price = 0,
     this.brand = '',
+    this.index = 0,
   });
 
   @override
@@ -62,14 +65,16 @@ class GoldCardWidget extends StatelessWidget {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
+                      backgroundColor: Colors.pink,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      await deleteCollection(index);
+                    },
                     child: Text(
-                      'Detail',
+                      'Remove',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

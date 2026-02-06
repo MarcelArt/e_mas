@@ -64,6 +64,7 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
                       price: collection?.price ?? 0,
                       purchaseDate: collection?.purchaseDate ?? 'N/A',
                       weight: collection?.weight ?? 0,
+                      index: index,
                     );
                   },
                 );

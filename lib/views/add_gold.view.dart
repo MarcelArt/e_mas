@@ -13,6 +13,7 @@ class AddGoldView extends StatefulWidget {
 }
 
 class _AddGoldViewState extends State<AddGoldView> {
+  String brandOption = list.first;
   String brand = list.first;
   double weight = 0;
   int price = 0;
@@ -21,12 +22,14 @@ class _AddGoldViewState extends State<AddGoldView> {
 
   Future _createCollection() async {
     final now = DateTime.now();
-    await createCollection(Collection(
-      brand: brand,
-      weight: weight,
-      price: price,
-      purchaseDate: DateFormat('dd MMM yyyy | hh:mm a').format(now),
-    ));
+    await createCollection(
+      Collection(
+        brand: brand,
+        weight: weight,
+        price: price,
+        purchaseDate: DateFormat('dd MMM yyyy | hh:mm a').format(now),
+      ),
+    );
     if (mounted) Navigator.pop(context);
   }
 
@@ -43,7 +46,7 @@ class _AddGoldViewState extends State<AddGoldView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DropdownButtonFormField(
-                initialValue: brand,
+                initialValue: brandOption,
                 decoration: InputDecoration(labelText: 'Brand'),
                 items: list.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
@@ -53,11 +56,12 @@ class _AddGoldViewState extends State<AddGoldView> {
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    brand = value!;
+                    brandOption = value!;
+                    brand = value;
                   });
                 },
               ),
-              brand == 'Other'
+              brandOption == 'Other'
                   ? TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Other brand name',

@@ -10,3 +10,8 @@ Future<List<Collection>> getAllCollections() async {
   final collectionsBox = Hive.box<Collection>('collections');
   return collectionsBox.values.toList();
 }
+
+Future deleteCollection(int index) async {
+  final collectionsBox = Hive.box<Collection>('collections');
+  await collectionsBox.deleteAt(index);
+}
