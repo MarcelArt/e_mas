@@ -15,3 +15,13 @@ Future deleteCollection(int index) async {
   final collectionsBox = Hive.box<Collection>('collections');
   await collectionsBox.deleteAt(index);
 }
+
+double getTotalWeight({Box<Collection>? collectionsBox}) {
+  collectionsBox ??= Hive.box<Collection>('collections');
+  double totalWeight = 0;
+
+  for (var item in collectionsBox.values) {
+    totalWeight += item.weight;
+  }
+  return totalWeight;
+}
