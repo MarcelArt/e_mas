@@ -1,4 +1,3 @@
-import 'package:e_mas/api/gold_price.api.dart';
 import 'package:e_mas/models/collection.model.dart';
 import 'package:e_mas/models/gold_price.model.dart';
 import 'package:e_mas/widgets/gold_card.widget.dart';
@@ -6,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class MyCollectionCardWidget extends StatefulWidget {
-  const MyCollectionCardWidget({super.key});
+  final GoldPrice latestGoldPrice;
+  
+  const MyCollectionCardWidget({super.key, required this.latestGoldPrice});
 
   @override
   State<MyCollectionCardWidget> createState() => _MyCollectionCardWidgetState();
@@ -14,32 +15,18 @@ class MyCollectionCardWidget extends StatefulWidget {
 
 class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
   late Box<Collection> collectionBox;
-  GoldPrice? latestGoldPrice;
+  // GoldPrice? latestGoldPrice;
 
   @override
   void initState() {
     super.initState();
     // Initialize box reference once, not on every build
     collectionBox = Hive.box<Collection>('collections');
-    _fetchLatestGoldPrice();
-  }
-
-  Future<void> _fetchLatestGoldPrice() async {
-    try {
-      final response = await getLatestGoldPrice();
-      if (mounted) {
-        setState(() {
-          latestGoldPrice = response.items;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error fetching gold price: $e');
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // final collectionBox = Hive.box<Collection>('collections');
+    final latestGoldPrice = widget.latestGoldPrice;
 
     return Card(
       child: Padding(
@@ -61,12 +48,6 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
                 ),
               ],
             ),
-            // GoldCardWidget(
-            //   brand: "UBS",
-            //   price: 927000,
-            //   purchaseDate: '01 Feb 2026 | 01:46 PM',
-            //   weight: 0.25,
-            // ),
             ValueListenableBuilder(
               valueListenable: collectionBox.listenable(),
               builder: (context, value, _) {
@@ -78,19 +59,17 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
                   itemBuilder: (context, index) {
                     final collection = value.getAt(index);
                     var buyBackPrice = 0;
-                    if (latestGoldPrice != null) {
-                      switch (collection?.brand.toLowerCase()) {
-                        case 'ubs':
-                          buyBackPrice = latestGoldPrice!.buyBack.ubs[collection!.weight.toString()] ?? 0;
-                          break;
-                        case 'antam':
-                          buyBackPrice = latestGoldPrice!.buyBack.antam[collection!.weight.toString()] ?? 0;
-                          break;
-                        default:
-                          buyBackPrice = collection?.price ?? 0; // Default or handle unknown brand
-                      }
+                    switch (collection?.brand.toLowerCase()) {
+                      case 'ubs':
+                        buyBackPrice = latestGoldPrice.buyBack.ubs[collection!.weight.toString()] ?? 0;
+                        break;
+                      case 'antam':
+                        buyBackPrice = latestGoldPrice.buyBack.antam[collection!.weight.toString()] ?? 0;
+                        break;
+                      default:
+                        buyBackPrice = collection?.price ?? 0; // Default or handle unknown brand
                     }
-                    return GoldCardWidget(
+                                      return GoldCardWidget(
                       brand: collection?.brand ?? 'Unknown',
                       price: collection?.price ?? 0,
                       purchaseDate: collection?.purchaseDate ?? 'N/A',

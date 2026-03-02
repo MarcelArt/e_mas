@@ -1,4 +1,5 @@
 import 'package:e_mas/models/collection.model.dart';
+import 'package:e_mas/models/gold_price.model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> createCollection(Collection item) async {
@@ -24,4 +25,33 @@ double getTotalWeight({Box<Collection>? collectionsBox}) {
     totalWeight += item.weight;
   }
   return totalWeight;
+}
+
+int getTotalValue({Box<Collection>? collectionsBox}) {
+  collectionsBox ??= Hive.box<Collection>('collections');
+  int totalValue = 0;
+
+  for (var item in collectionsBox.values) {
+    totalValue += item.price;
+  }
+  return totalValue;
+}
+
+int getCurrentValue({Box<Collection>? collectionsBox, GoldPriceList? goldPrices}) {
+  collectionsBox ??= Hive.box<Collection>('collections');
+  int totalValue = 0;
+
+  for (var item in collectionsBox.values) {
+    switch (item.brand) {
+      case 'UBS':
+        totalValue += goldPrices?.ubs[item.weight.toString()] ?? item.price;
+        break;
+      case 'ANTAM':
+        totalValue += goldPrices?.antam[item.weight.toString()] ?? item.price;
+        break;
+      default:
+        totalValue += item.price;
+    }
+  }
+  return totalValue;
 }
