@@ -2,6 +2,15 @@ import 'package:e_mas/models/collection.model.dart';
 import 'package:e_mas/models/gold_price.model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+/// Format weight as string to match API map keys
+/// e.g., 5.0 -> "5", 0.5 -> "0.5", 10.0 -> "10"
+String _formatWeightKey(double weight) {
+  if (weight == weight.truncateToDouble()) {
+    return weight.toInt().toString();
+  }
+  return weight.toString();
+}
+
 Future<void> createCollection(Collection item) async {
   final collectionsBox = Hive.box<Collection>('collections');
   await collectionsBox.add(item);
@@ -44,10 +53,10 @@ int getCurrentValue({Box<Collection>? collectionsBox, GoldPriceList? goldPrices}
   for (var item in collectionsBox.values) {
     switch (item.brand) {
       case 'UBS':
-        totalValue += goldPrices?.ubs[item.weight.toString()] ?? item.price;
+        totalValue += goldPrices?.ubs[_formatWeightKey(item.weight)] ?? item.price;
         break;
       case 'ANTAM':
-        totalValue += goldPrices?.antam[item.weight.toString()] ?? item.price;
+        totalValue += goldPrices?.antam[_formatWeightKey(item.weight)] ?? item.price;
         break;
       default:
         totalValue += item.price;

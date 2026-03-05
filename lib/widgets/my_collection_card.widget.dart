@@ -22,6 +22,15 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
     collectionBox = Hive.box<Collection>('collections');
   }
 
+  /// Format weight as string to match API map keys
+  /// e.g., 5.0 -> "5", 0.5 -> "0.5", 10.0 -> "10"
+  String _formatWeightKey(double weight) {
+    if (weight == weight.truncateToDouble()) {
+      return weight.toInt().toString();
+    }
+    return weight.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -70,10 +79,7 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFFFFD700),
-                          Color(0xFFFFA500),
-                        ],
+                        colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
                       ),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
@@ -87,11 +93,7 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 18,
-                        ),
+                        Icon(Icons.add, color: Colors.white, size: 18),
                         SizedBox(width: 4),
                         Text(
                           'Add Gold',
@@ -129,13 +131,13 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
 
                 switch (collection?.brand.toLowerCase()) {
                   case 'ubs':
-                    buyBackPrice = widget.latestGoldPrice.buyBack.ubs[
-                            collection!.weight.toString()] ??
+                    buyBackPrice =
+                        widget.latestGoldPrice.buyBack.ubs[_formatWeightKey(collection!.weight)] ??
                         0;
                     break;
                   case 'antam':
-                    buyBackPrice = widget.latestGoldPrice.buyBack.antam[
-                            collection!.weight.toString()] ??
+                    buyBackPrice =
+                        widget.latestGoldPrice.buyBack.antam[_formatWeightKey(collection!.weight)] ??
                         0;
                     break;
                   default:
@@ -165,10 +167,7 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
       decoration: BoxDecoration(
         color: Color(0xFF1A1A2E),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Color(0xFF2D2D44),
-          width: 2,
-        ),
+        border: Border.all(color: Color(0xFF2D2D44), width: 2),
       ),
       child: Column(
         children: [
@@ -211,10 +210,7 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
             icon: Icon(Icons.add, size: 18),
             label: Text(
               'Add First Gold',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.3,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 0.3),
             ),
             style: ElevatedButton.styleFrom(
               foregroundColor: Color(0xFF0F0F1A),
