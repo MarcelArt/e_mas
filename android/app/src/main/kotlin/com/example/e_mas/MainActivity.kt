@@ -1,4 +1,4 @@
-package com.example.e_mas
+package art.bangmarcel.e_mas
 
 import io.flutter.embedding.android.FlutterActivity
 

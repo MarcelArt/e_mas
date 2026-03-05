@@ -16,6 +16,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   late GoldPrice latestGoldPrice;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _HomeViewState extends State<HomeView> {
       if (mounted) {
         setState(() {
           latestGoldPrice = response.items!;
+          isLoading = false;
         });
       }
     } catch (e) {
@@ -43,7 +45,7 @@ class _HomeViewState extends State<HomeView> {
       // appBar: AppBar(title: const Text('E-Mas')),
       body: Padding(
         padding: const EdgeInsets.only(top: 60, left: 24, right: 24),
-        child: Column(
+        child: !isLoading ? Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ValueListenableBuilder(
@@ -56,7 +58,7 @@ class _HomeViewState extends State<HomeView> {
                   goldPrices: latestGoldPrice.buyBack,
                 );
                 final profit = currentValue - totalValue;
-                final profitPercentage = (profit / totalValue) * 100;
+                final double profitPercentage = totalValue == 0 ? 0 : (profit / totalValue) * 100;
                 return SummaryCardWidget(
                   total: total,
                   totalValue: totalValue,
@@ -67,7 +69,7 @@ class _HomeViewState extends State<HomeView> {
             ),
             MyCollectionCardWidget(latestGoldPrice: latestGoldPrice),
           ],
-        ),
+        ) : null,
       ),
     );
   }

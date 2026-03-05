@@ -8,7 +8,7 @@
 PRODUCT_NAME = e_mas
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.eMas
+PRODUCT_BUNDLE_IDENTIFIER = art.bangmarcel.eMas
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.example. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 art.bangmarcel. All rights reserved.
