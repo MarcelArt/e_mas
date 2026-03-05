@@ -6,6 +6,7 @@ class SummaryCardWidget extends StatelessWidget {
   final int totalValue;
   final int currentValue;
   final double profitPercentage;
+  final int itemCount;
 
   const SummaryCardWidget({
     super.key,
@@ -13,6 +14,7 @@ class SummaryCardWidget extends StatelessWidget {
     this.totalValue = 0,
     this.currentValue = 0,
     this.profitPercentage = 0,
+    this.itemCount = 0,
   });
 
   @override
@@ -218,7 +220,7 @@ class SummaryCardWidget extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '${total.toInt() > 0 ? '~${(total / 5).ceil() * total.toInt()}' : '0'}',
+                            '$itemCount',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,

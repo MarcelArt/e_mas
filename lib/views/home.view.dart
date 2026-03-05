@@ -91,6 +91,7 @@ class _HomeViewState extends State<HomeView> {
                                 totalValue: totalValue,
                                 currentValue: currentValue,
                                 profitPercentage: profitPercentage,
+                                itemCount: value.length,
                               );
                             },
                           ),
