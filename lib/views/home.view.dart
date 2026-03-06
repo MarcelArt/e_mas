@@ -2,6 +2,7 @@ import 'package:e_mas/api/gold_price.api.dart';
 import 'package:e_mas/models/collection.model.dart';
 import 'package:e_mas/models/gold_price.model.dart';
 import 'package:e_mas/repos/collection.repo.dart';
+import 'package:e_mas/utils/app_theme.dart';
 import 'package:e_mas/widgets/my_collection_card.widget.dart';
 import 'package:e_mas/widgets/summary_card.widget.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ class _HomeViewState extends State<HomeView> {
     final collectionsBox = Hive.box<Collection>('collections');
 
     return Scaffold(
-      backgroundColor: Color(0xFF0F0F1A),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: isLoading
             ? _buildLoadingState()
@@ -59,20 +60,20 @@ class _HomeViewState extends State<HomeView> {
                 ? _buildErrorState()
                 : RefreshIndicator(
                     onRefresh: _fetchLatestGoldPrice,
-                    color: Color(0xFFFFD700),
-                    backgroundColor: Color(0xFF1A1A2E),
+                    color: AppColors.gold,
+                    backgroundColor: AppColors.cardBackground,
                     child: SingleChildScrollView(
                       physics: AlwaysScrollableScrollPhysics(),
                       padding: EdgeInsets.only(
-                        top: 20,
-                        left: 16,
-                        right: 16,
-                        bottom: 20,
+                        top: AppSpacing.lg,
+                        left: AppSpacing.md,
+                        right: AppSpacing.md,
+                        bottom: AppSpacing.lg,
                       ),
                       child: Column(
                         children: [
                           _buildHeader(),
-                          SizedBox(height: 16),
+                          SizedBox(height: AppSpacing.md),
                           ValueListenableBuilder(
                             valueListenable: collectionsBox.listenable(),
                             builder: (context, value, child) {
@@ -95,7 +96,7 @@ class _HomeViewState extends State<HomeView> {
                               );
                             },
                           ),
-                          SizedBox(height: 16),
+                          SizedBox(height: AppSpacing.md),
                           if (latestGoldPrice != null)
                             MyCollectionCardWidget(latestGoldPrice: latestGoldPrice!),
                         ],
@@ -117,52 +118,32 @@ class _HomeViewState extends State<HomeView> {
             children: [
               Text(
                 'Welcome Back!',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF9CA3AF),
-                  fontWeight: FontWeight.w500,
-                ),
+                style: AppTextStyles.bodyLarge,
               ),
               SizedBox(height: 2),
               Text(
                 'E-Mas Portfolio',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  letterSpacing: -0.5,
-                ),
+                style: AppTextStyles.headingLarge,
               ),
             ],
           ),
           Container(
             padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Color(0xFF1A1A2E),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Color(0xFF2D2D44),
-                width: 1,
-              ),
-            ),
+            decoration: AppDecorations.cardDecorationPlain(),
             child: Row(
               children: [
                 Container(
                   width: 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: AppColors.success,
                     shape: BoxShape.circle,
                   ),
                 ),
                 SizedBox(width: 6),
                 Text(
                   'Live',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
+                  style: AppTextStyles.labelSmall,
                 ),
               ],
             ),
@@ -182,17 +163,13 @@ class _HomeViewState extends State<HomeView> {
             height: 60,
             child: CircularProgressIndicator(
               strokeWidth: 3,
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFFD700)),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.gold),
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: AppSpacing.lg),
           Text(
             'Loading gold prices...',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF9CA3AF),
-            ),
+            style: AppTextStyles.label,
           ),
         ],
       ),
@@ -202,53 +179,39 @@ class _HomeViewState extends State<HomeView> {
   Widget _buildErrorState() {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(32),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Color(0xFF3F1A1A),
+                color: AppColors.errorBackground,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.error_outline,
                 size: 48,
-                color: Color(0xFFDC2626),
+                color: AppColors.error,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: AppSpacing.lg),
             Text(
               'Oops!',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
+              style: AppTextStyles.headingMedium,
             ),
-            SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             Text(
               errorMessage ?? 'Failed to load gold prices',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Color(0xFF9CA3AF),
-              ),
+              style: AppTextStyles.bodyMedium,
             ),
-            SizedBox(height: 24),
+            SizedBox(height: AppSpacing.lg),
             ElevatedButton.icon(
               onPressed: _fetchLatestGoldPrice,
               icon: Icon(Icons.refresh),
               label: Text('Retry'),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color(0xFFFFD700),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
+              style: AppButtonStyles.goldButton,
             ),
           ],
         ),

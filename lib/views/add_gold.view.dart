@@ -1,5 +1,6 @@
 import 'package:e_mas/models/collection.model.dart';
 import 'package:e_mas/repos/collection.repo.dart';
+import 'package:e_mas/utils/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -27,7 +28,7 @@ class _AddGoldViewState extends State<AddGoldView> {
         brand: brand,
         weight: weight,
         price: price,
-        purchaseDate: DateFormat('dd MMM yyyy | hh:mm a').format(now),
+        purchaseDate: DateFormat('dd MMM yyyy').format(now),
       ),
     );
     if (mounted) Navigator.pop(context);
@@ -36,50 +37,39 @@ class _AddGoldViewState extends State<AddGoldView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0F0F1A),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: Color(0xFF0F0F1A),
+        backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Add Gold',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-            fontSize: 20,
-          ),
+          style: AppTextStyles.headingSmall,
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 8),
+              SizedBox(height: AppSpacing.sm),
               Text(
                 'Add to Collection',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                ),
+                style: AppTextStyles.headingLarge,
               ),
-              SizedBox(height: 8),
+              SizedBox(height: AppSpacing.sm),
               Text(
                 'Enter the details of your gold purchase',
-                style: TextStyle(
-                  color: Color(0xFF9CA3AF),
-                  fontSize: 14,
-                ),
+                style: AppTextStyles.bodyLarge,
               ),
-              SizedBox(height: 24),
+              SizedBox(height: AppSpacing.lg),
               _buildBrandDropdown(),
-              SizedBox(height: 16),
+              SizedBox(height: AppSpacing.md),
               _buildTextField(
                 label: 'Weight (grams)',
                 hint: 'Enter weight in grams',
@@ -100,7 +90,7 @@ class _AddGoldViewState extends State<AddGoldView> {
                   });
                 },
               ),
-              SizedBox(height: 16),
+              SizedBox(height: AppSpacing.md),
               _buildTextField(
                 label: 'Buy price',
                 hint: 'Enter buy price in rupiah',
@@ -121,7 +111,7 @@ class _AddGoldViewState extends State<AddGoldView> {
                   });
                 },
               ),
-              SizedBox(height: 32),
+              SizedBox(height: AppSpacing.xl),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -130,22 +120,10 @@ class _AddGoldViewState extends State<AddGoldView> {
                       await _createCollection();
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFFD700),
-                    foregroundColor: Color(0xFF0F0F1A),
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                  ),
+                  style: AppButtonStyles.goldButton,
                   child: Text(
                     'Add Gold',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                      letterSpacing: 0.5,
-                    ),
+                    style: AppTextStyles.label,
                   ),
                 ),
               ),
@@ -160,34 +138,21 @@ class _AddGoldViewState extends State<AddGoldView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Brand',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: 8),
+        Text('Brand', style: AppTextStyles.label),
+        SizedBox(height: AppSpacing.sm),
         Container(
-          decoration: BoxDecoration(
-            color: Color(0xFF1A1A2E),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Color(0xFF2D2D44),
-              width: 1,
-            ),
-          ),
+          decoration: AppDecorations.cardDecorationPlain(),
           child: DropdownButtonHideUnderline(
             child: DropdownButtonFormField<String>(
               initialValue: brandOption,
-              dropdownColor: Color(0xFF1A1A2E),
+              dropdownColor: AppColors.cardBackground,
               decoration: InputDecoration(
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 4),
               ),
-              icon: Icon(Icons.keyboard_arrow_down, color: Color(0xFFFFD700)),
-              style: TextStyle(color: Colors.white, fontSize: 16),
+              icon: Icon(Icons.keyboard_arrow_down, color: AppColors.gold),
+              style: AppTextStyles.label,
               items: list.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -204,7 +169,7 @@ class _AddGoldViewState extends State<AddGoldView> {
           ),
         ),
         if (brandOption == 'Other') ...[
-          SizedBox(height: 16),
+          SizedBox(height: AppSpacing.md),
           _buildTextField(
             label: 'Other brand name',
             hint: 'Enter brand name',
@@ -236,45 +201,11 @@ class _AddGoldViewState extends State<AddGoldView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: 8),
+        Text(label, style: AppTextStyles.label),
+        SizedBox(height: AppSpacing.sm),
         TextFormField(
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(color: Color(0xFF6B7280)),
-            filled: true,
-            fillColor: Color(0xFF1A1A2E),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Color(0xFF2D2D44)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Color(0xFF2D2D44)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Color(0xFFFFD700)),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Color(0xFFDC2626)),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Color(0xFFDC2626)),
-            ),
-            errorStyle: TextStyle(color: Color(0xFFDC2626)),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          ),
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          decoration: AppDecorations.inputDecoration(hintText: hint),
+          style: AppTextStyles.label,
           keyboardType: keyboardType,
           validator: validator,
           onChanged: onChanged,

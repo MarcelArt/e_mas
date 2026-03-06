@@ -1,4 +1,5 @@
 import 'package:e_mas/repos/collection.repo.dart';
+import 'package:e_mas/utils/app_theme.dart';
 import 'package:e_mas/utils/currency.dart';
 import 'package:flutter/material.dart';
 
@@ -27,36 +28,15 @@ class GoldCardWidget extends StatelessWidget {
     final isProfit = profit >= 0;
 
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF1A1A2E),
-            Color(0xFF16213E),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Color(0xFF2D2D44),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
+      margin: EdgeInsets.only(bottom: AppSpacing.sm),
+      decoration: AppDecorations.cardDecoration(),
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppBorderRadius.large),
         onTap: () {
           // Could add detail view here
         },
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -64,44 +44,28 @@ class GoldCardWidget extends StatelessWidget {
                 children: [
                   Container(
                     padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFFFFD700),
-                          Color(0xFFFFA500),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    decoration: AppDecorations.goldGradientDecoration(radius: 12),
                     child: Icon(
                       Icons.monetization_on,
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       size: 24,
                     ),
                   ),
-                  SizedBox(width: 12),
+                  SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           brand.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                          style: AppTextStyles.labelSmall.copyWith(
                             letterSpacing: 1,
                           ),
                         ),
                         SizedBox(height: 2),
                         Text(
                           '$weight gram',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF9CA3AF),
-                          ),
+                          style: AppTextStyles.bodySmall,
                         ),
                       ],
                     ),
@@ -109,11 +73,12 @@ class GoldCardWidget extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: (isProfit ? Colors.green : Colors.red)
-                          .withValues(alpha: 0.1),
+                      color:
+                          (isProfit ? AppColors.success : AppColors.error)
+                              .withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: isProfit ? Colors.green : Colors.red,
+                        color: isProfit ? AppColors.success : AppColors.error,
                         width: 1,
                       ),
                     ),
@@ -125,15 +90,14 @@ class GoldCardWidget extends StatelessWidget {
                               ? Icons.arrow_upward
                               : Icons.arrow_downward,
                           size: 14,
-                          color: isProfit ? Colors.green : Colors.red,
+                          color: isProfit ? AppColors.success : AppColors.error,
                         ),
-                        SizedBox(width: 4),
+                        SizedBox(width: AppSpacing.xs),
                         Text(
                           '${isProfit ? '+' : ''}${profitPercentage.toStringAsFixed(1)}%',
-                          style: TextStyle(
-                            color: isProfit ? Colors.green : Colors.red,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: isProfit ? AppColors.success : AppColors.error,
                             fontWeight: FontWeight.w700,
-                            fontSize: 12,
                           ),
                         ),
                       ],
@@ -141,7 +105,7 @@ class GoldCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              SizedBox(height: AppSpacing.md),
               Row(
                 children: [
                   Expanded(
@@ -149,46 +113,43 @@ class GoldCardWidget extends StatelessWidget {
                       'Buy Price',
                       formatRupiah(price),
                       Icons.shopping_cart_outlined,
-                      Colors.blue,
+                      AppColors.info,
                     ),
                   ),
-                  SizedBox(width: 12),
+                  SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: _buildPriceInfo(
                       'Buyback',
                       formatRupiah(buyBackPrice),
                       Icons.currency_exchange,
-                      Colors.green,
+                      AppColors.success,
                     ),
                   ),
-                  SizedBox(width: 12),
+                  SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: _buildPriceInfo(
                       '${isProfit ? 'Profit' : 'Loss'}',
                       '${isProfit ? '+' : ''}${formatRupiah(profit.abs())}',
                       isProfit ? Icons.trending_up : Icons.trending_down,
-                      isProfit ? Colors.green : Colors.red,
+                      isProfit ? AppColors.success : AppColors.error,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 12),
-              Divider(color: Color(0xFF2D2D44)),
-              SizedBox(height: 12),
+              SizedBox(height: AppSpacing.sm),
+              Divider(color: AppColors.border),
+              SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
                   Icon(
                     Icons.calendar_today_outlined,
                     size: 14,
-                    color: Color(0xFF9CA3AF),
+                    color: AppColors.textSecondary,
                   ),
                   SizedBox(width: 6),
                   Text(
                     'Purchased: $purchaseDate',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Color(0xFF9CA3AF),
-                    ),
+                    style: AppTextStyles.bodySmall,
                   ),
                   Spacer(),
                   Material(
@@ -198,28 +159,26 @@ class GoldCardWidget extends StatelessWidget {
                         final confirmed = await showDialog<bool>(
                           context: context,
                           builder: (context) => AlertDialog(
-                            backgroundColor: Color(0xFF1A1A2E),
+                            backgroundColor: AppColors.cardBackground,
                             title: Text(
                               'Remove Gold',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: AppColors.textPrimary),
                             ),
                             content: Text(
                               'Are you sure you want to remove this $brand ${weight}g gold from your collection?',
-                              style: TextStyle(color: Color(0xFF9CA3AF)),
+                              style: TextStyle(color: AppColors.textSecondary),
                             ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context, false),
                                 child: Text(
                                   'Cancel',
-                                  style: TextStyle(color: Color(0xFF9CA3AF)),
+                                  style: TextStyle(color: AppColors.textSecondary),
                                 ),
                               ),
                               TextButton(
                                 onPressed: () => Navigator.pop(context, true),
-                                style: TextButton.styleFrom(
-                                  foregroundColor: Color(0xFFDC2626),
-                                ),
+                                style: AppButtonStyles.dangerButton,
                                 child: Text('Remove'),
                               ),
                             ],
@@ -232,14 +191,14 @@ class GoldCardWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.sm,
                         ),
                         decoration: BoxDecoration(
-                          color: Color(0xFF3F1A1A),
+                          color: AppColors.errorBackground,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: Color(0xFFDC2626),
+                            color: AppColors.error,
                             width: 1,
                           ),
                         ),
@@ -249,15 +208,14 @@ class GoldCardWidget extends StatelessWidget {
                             Icon(
                               Icons.delete_outline,
                               size: 16,
-                              color: Color(0xFFDC2626),
+                              color: AppColors.error,
                             ),
-                            SizedBox(width: 4),
+                            SizedBox(width: AppSpacing.xs),
                             Text(
                               'Remove',
-                              style: TextStyle(
-                                fontSize: 12,
+                              style: AppTextStyles.bodySmall.copyWith(
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFFDC2626),
+                                color: AppColors.error,
                               ),
                             ),
                           ],
@@ -281,10 +239,10 @@ class GoldCardWidget extends StatelessWidget {
     Color color,
   ) {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,11 +254,10 @@ class GoldCardWidget extends StatelessWidget {
                 size: 14,
                 color: color,
               ),
-              SizedBox(width: 4),
+              SizedBox(width: AppSpacing.xs),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 10,
+                style: AppTextStyles.bodySmall.copyWith(
                   color: color.withValues(alpha: 0.8),
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.3,
@@ -311,12 +268,7 @@ class GoldCardWidget extends StatelessWidget {
           SizedBox(height: 6),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: color,
-              letterSpacing: 0.3,
-            ),
+            style: AppTextStyles.priceSmall.copyWith(color: color),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

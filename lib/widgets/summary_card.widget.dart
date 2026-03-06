@@ -1,3 +1,4 @@
+import 'package:e_mas/utils/app_theme.dart';
 import 'package:e_mas/utils/currency.dart';
 import 'package:flutter/material.dart';
 
@@ -23,26 +24,18 @@ class SummaryCardWidget extends StatelessWidget {
     final isProfit = profit >= 0;
 
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF1A1A2E),
-            Color(0xFF16213E),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
+      decoration: AppDecorations.cardDecoration().copyWith(
+        borderRadius: BorderRadius.circular(AppBorderRadius.xlarge),
         boxShadow: [
           BoxShadow(
-            color: Color(0xFF1A1A2E).withOpacity(0.3),
+            color: AppColors.cardBackground.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: Offset(0, 10),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -54,17 +47,14 @@ class SummaryCardWidget extends StatelessWidget {
                   children: [
                     Text(
                       "E-Mas",
-                      style: TextStyle(
+                      style: AppTextStyles.headingLarge.copyWith(
                         fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
                         letterSpacing: 1,
                       ),
                     ),
                     Text(
                       'Gold Portfolio',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: AppTextStyles.bodySmall.copyWith(
                         color: Colors.white54,
                         letterSpacing: 0.5,
                       ),
@@ -74,10 +64,11 @@ class SummaryCardWidget extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: (isProfit ? Colors.green : Colors.red).withOpacity(0.2),
+                    color: (isProfit ? AppColors.success : AppColors.error)
+                        .withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: isProfit ? Colors.green : Colors.red,
+                      color: isProfit ? AppColors.success : AppColors.error,
                       width: 1,
                     ),
                   ),
@@ -87,15 +78,14 @@ class SummaryCardWidget extends StatelessWidget {
                       Icon(
                         isProfit ? Icons.trending_up : Icons.trending_down,
                         size: 16,
-                        color: isProfit ? Colors.green : Colors.red,
+                        color: isProfit ? AppColors.success : AppColors.error,
                       ),
-                      SizedBox(width: 4),
+                      SizedBox(width: AppSpacing.xs),
                       Text(
                         '${isProfit ? '+' : ''}${profitPercentage.toStringAsFixed(2)}%',
-                        style: TextStyle(
-                          color: isProfit ? Colors.green : Colors.red,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: isProfit ? AppColors.success : AppColors.error,
                           fontWeight: FontWeight.w700,
-                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -103,14 +93,14 @@ class SummaryCardWidget extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 24),
+            SizedBox(height: AppSpacing.lg),
             Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.white.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(AppBorderRadius.large),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   width: 1,
                 ),
               ),
@@ -119,75 +109,64 @@ class SummaryCardWidget extends StatelessWidget {
                 children: [
                   Text(
                     'Current Value',
-                    style: TextStyle(
-                      fontSize: 12,
+                    style: AppTextStyles.bodySmall.copyWith(
                       color: Colors.white54,
                       letterSpacing: 0.5,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: AppSpacing.xs),
                   Text(
                     formatRupiah(currentValue),
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: 0.5,
-                    ),
+                    style: AppTextStyles.priceLarge,
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: AppSpacing.sm),
                   Row(
                     children: [
                       _buildStatItem(
                         'Invested',
                         formatRupiah(totalValue),
-                        Colors.blue,
+                        AppColors.info,
                       ),
-                      SizedBox(width: 16),
+                      SizedBox(width: AppSpacing.sm),
                       _buildStatItem(
                         '${isProfit ? 'Profit' : 'Loss'}',
                         '${isProfit ? '+' : ''}${formatRupiah(profit.abs())}',
-                        isProfit ? Colors.green : Colors.red,
+                        isProfit ? AppColors.success : AppColors.error,
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 Container(
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Color(0xFFFFD700).withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.gold.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(AppBorderRadius.medium),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         Icons.monetization_on,
-                        color: Color(0xFFFFD700),
+                        color: AppColors.gold,
                         size: 20,
                       ),
-                      SizedBox(width: 8),
+                      SizedBox(width: AppSpacing.xs),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Total Weight',
-                            style: TextStyle(
-                              fontSize: 10,
+                            style: AppTextStyles.bodySmall.copyWith(
                               color: Colors.white54,
                             ),
                           ),
                           Text(
                             '$total gram',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
-                            ),
+                            style: AppTextStyles.labelSmall,
                           ),
                         ],
                       ),
@@ -198,8 +177,8 @@ class SummaryCardWidget extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(AppBorderRadius.medium),
                   ),
                   child: Row(
                     children: [
@@ -208,24 +187,19 @@ class SummaryCardWidget extends StatelessWidget {
                         color: Colors.white60,
                         size: 20,
                       ),
-                      SizedBox(width: 8),
+                      SizedBox(width: AppSpacing.xs),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Items',
-                            style: TextStyle(
-                              fontSize: 10,
+                            style: AppTextStyles.bodySmall.copyWith(
                               color: Colors.white54,
                             ),
                           ),
                           Text(
-                            '$itemCount',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
-                            ),
+                            itemCount.toString(),
+                            style: AppTextStyles.labelSmall,
                           ),
                         ],
                       ),
@@ -247,8 +221,7 @@ class SummaryCardWidget extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontSize: 10,
+            style: AppTextStyles.bodySmall.copyWith(
               color: Colors.white54,
               letterSpacing: 0.5,
             ),
@@ -256,12 +229,7 @@ class SummaryCardWidget extends StatelessWidget {
           SizedBox(height: 2),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: color,
-              letterSpacing: 0.3,
-            ),
+            style: AppTextStyles.priceSmall.copyWith(color: color),
           ),
         ],
       ),
