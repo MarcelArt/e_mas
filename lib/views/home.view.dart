@@ -20,6 +20,7 @@ class _HomeViewState extends State<HomeView> {
   GoldPrice? latestGoldPrice;
   bool isLoading = true;
   String? errorMessage;
+  bool _isPrivacyMode = false;
 
   @override
   void initState() {
@@ -94,6 +95,12 @@ class _HomeViewState extends State<HomeView> {
                                 currentValue: currentValue,
                                 profitPercentage: profitPercentage,
                                 itemCount: value.length,
+                                isPrivacyMode: _isPrivacyMode,
+                                onPrivacyToggle: () {
+                                  setState(() {
+                                    _isPrivacyMode = !_isPrivacyMode;
+                                  });
+                                },
                               );
                             },
                           ),
@@ -103,7 +110,10 @@ class _HomeViewState extends State<HomeView> {
                             GoldPriceCarouselWidget(goldPrice: latestGoldPrice!),
                           SizedBox(height: AppSpacing.md),
                           if (latestGoldPrice != null)
-                            MyCollectionCardWidget(latestGoldPrice: latestGoldPrice!),
+                            MyCollectionCardWidget(
+                              latestGoldPrice: latestGoldPrice!,
+                              isPrivacyMode: _isPrivacyMode,
+                            ),
                         ],
                       ),
                     ),

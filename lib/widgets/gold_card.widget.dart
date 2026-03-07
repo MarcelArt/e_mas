@@ -10,6 +10,7 @@ class GoldCardWidget extends StatelessWidget {
   final String brand;
   final int index;
   final int buyBackPrice;
+  final bool isPrivacyMode;
 
   const GoldCardWidget({
     super.key,
@@ -19,6 +20,7 @@ class GoldCardWidget extends StatelessWidget {
     this.brand = '',
     this.index = 0,
     this.buyBackPrice = 0,
+    this.isPrivacyMode = false,
   });
 
   @override
@@ -70,39 +72,46 @@ class GoldCardWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color:
-                          (isProfit ? AppColors.success : AppColors.error)
-                              .withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isProfit ? AppColors.success : AppColors.error,
-                        width: 1,
+                  if (!isPrivacyMode)
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color:
+                            (isProfit ? AppColors.success : AppColors.error)
+                                .withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isProfit ? AppColors.success : AppColors.error,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isProfit
+                                ? Icons.arrow_upward
+                                : Icons.arrow_downward,
+                            size: 14,
+                            color: isProfit ? AppColors.success : AppColors.error,
+                          ),
+                          SizedBox(width: AppSpacing.xs),
+                          Text(
+                            '${isProfit ? '+' : ''}${profitPercentage.toStringAsFixed(1)}%',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: isProfit ? AppColors.success : AppColors.error,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          isProfit
-                              ? Icons.arrow_upward
-                              : Icons.arrow_downward,
-                          size: 14,
-                          color: isProfit ? AppColors.success : AppColors.error,
-                        ),
-                        SizedBox(width: AppSpacing.xs),
-                        Text(
-                          '${isProfit ? '+' : ''}${profitPercentage.toStringAsFixed(1)}%',
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: isProfit ? AppColors.success : AppColors.error,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
+                  if (isPrivacyMode)
+                    Icon(
+                      Icons.lock,
+                      size: 16,
+                      color: AppColors.gold,
                     ),
-                  ),
                 ],
               ),
               SizedBox(height: AppSpacing.md),
@@ -111,7 +120,7 @@ class GoldCardWidget extends StatelessWidget {
                   Expanded(
                     child: _buildPriceInfo(
                       'Buy Price',
-                      formatRupiah(price),
+                      isPrivacyMode ? '••••••••' : formatRupiah(price),
                       Icons.shopping_cart_outlined,
                       AppColors.info,
                     ),
@@ -120,7 +129,7 @@ class GoldCardWidget extends StatelessWidget {
                   Expanded(
                     child: _buildPriceInfo(
                       'Buyback',
-                      formatRupiah(buyBackPrice),
+                      isPrivacyMode ? '••••••••' : formatRupiah(buyBackPrice),
                       Icons.currency_exchange,
                       AppColors.success,
                     ),
@@ -129,7 +138,9 @@ class GoldCardWidget extends StatelessWidget {
                   Expanded(
                     child: _buildPriceInfo(
                       '${isProfit ? 'Profit' : 'Loss'}',
-                      '${isProfit ? '+' : ''}${formatRupiah(profit.abs())}',
+                      isPrivacyMode
+                          ? '••••••••'
+                          : '${isProfit ? '+' : ''}${formatRupiah(profit.abs())}',
                       isProfit ? Icons.trending_up : Icons.trending_down,
                       isProfit ? AppColors.success : AppColors.error,
                     ),
@@ -268,7 +279,10 @@ class GoldCardWidget extends StatelessWidget {
           SizedBox(height: 6),
           Text(
             value,
-            style: AppTextStyles.priceSmall.copyWith(color: color),
+            style: AppTextStyles.priceSmall.copyWith(
+              color: color,
+              fontFamily: value.contains('•') ? 'Courier' : null,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

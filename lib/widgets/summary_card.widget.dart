@@ -8,6 +8,8 @@ class SummaryCardWidget extends StatelessWidget {
   final int currentValue;
   final double profitPercentage;
   final int itemCount;
+  final bool isPrivacyMode;
+  final VoidCallback onPrivacyToggle;
 
   const SummaryCardWidget({
     super.key,
@@ -16,6 +18,8 @@ class SummaryCardWidget extends StatelessWidget {
     this.currentValue = 0,
     this.profitPercentage = 0,
     this.itemCount = 0,
+    this.isPrivacyMode = false,
+    required this.onPrivacyToggle,
   });
 
   @override
@@ -61,35 +65,95 @@ class SummaryCardWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: (isProfit ? AppColors.success : AppColors.error)
-                        .withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isProfit ? AppColors.success : AppColors.error,
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        isProfit ? Icons.trending_up : Icons.trending_down,
-                        size: 16,
-                        color: isProfit ? AppColors.success : AppColors.error,
-                      ),
-                      SizedBox(width: AppSpacing.xs),
-                      Text(
-                        '${isProfit ? '+' : ''}${profitPercentage.toStringAsFixed(2)}%',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: isProfit ? AppColors.success : AppColors.error,
-                          fontWeight: FontWeight.w700,
+                Row(
+                  children: [
+                    if (!isPrivacyMode)
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              (isProfit ? AppColors.success : AppColors.error)
+                                  .withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: isProfit
+                                ? AppColors.success
+                                : AppColors.error,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isProfit
+                                  ? Icons.trending_up
+                                  : Icons.trending_down,
+                              size: 16,
+                              color: isProfit
+                                  ? AppColors.success
+                                  : AppColors.error,
+                            ),
+                            SizedBox(width: AppSpacing.xs),
+                            Text(
+                              '${isProfit ? '+' : ''}${profitPercentage.toStringAsFixed(2)}%',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: isProfit
+                                    ? AppColors.success
+                                    : AppColors.error,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    SizedBox(width: AppSpacing.xs),
+                    GestureDetector(
+                      onTap: onPrivacyToggle,
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: isPrivacyMode
+                              ? AppColors.gold.withValues(alpha: 0.2)
+                              : Colors.white.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isPrivacyMode
+                                ? AppColors.gold
+                                : Colors.white.withValues(alpha: 0.2),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              isPrivacyMode
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              size: 18,
+                              color: isPrivacyMode
+                                  ? AppColors.gold
+                                  : AppColors.textSecondary,
+                            ),
+                            // if (!isPrivacyMode) ...[
+                            //   SizedBox(width: 6),
+                            //   // Text(
+                            //   //   'Hide',
+                            //   //   style: AppTextStyles.bodySmall.copyWith(
+                            //   //     color: AppColors.textSecondary,
+                            //   //     fontSize: 11,
+                            //   //   ),
+                            //   // ),
+                            // ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -116,22 +180,28 @@ class SummaryCardWidget extends StatelessWidget {
                   ),
                   SizedBox(height: AppSpacing.xs),
                   Text(
-                    formatRupiah(currentValue),
-                    style: AppTextStyles.priceLarge,
+                    isPrivacyMode ? '••••••••' : formatRupiah(currentValue),
+                    style: AppTextStyles.priceLarge.copyWith(
+                      fontFamily: isPrivacyMode ? 'Courier' : null,
+                    ),
                   ),
                   SizedBox(height: AppSpacing.sm),
                   Row(
                     children: [
                       _buildStatItem(
                         'Invested',
-                        formatRupiah(totalValue),
+                        isPrivacyMode ? '••••••••' : formatRupiah(totalValue),
                         AppColors.info,
                       ),
                       SizedBox(width: AppSpacing.sm),
                       _buildStatItem(
-                        '${isProfit ? 'Profit' : 'Loss'}',
-                        '${isProfit ? '+' : ''}${formatRupiah(profit.abs())}',
-                        isProfit ? AppColors.success : AppColors.error,
+                        isProfit ? 'Profit' : 'Loss',
+                        isPrivacyMode
+                            ? '••••••••'
+                            : '${isProfit ? '+' : ''}${formatRupiah(profit.abs())}',
+                        isPrivacyMode
+                            ? AppColors.textSecondary
+                            : (isProfit ? AppColors.success : AppColors.error),
                       ),
                     ],
                   ),
@@ -165,8 +235,10 @@ class SummaryCardWidget extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '$total gram',
-                            style: AppTextStyles.labelSmall,
+                            isPrivacyMode ? '•••' : '$total gram',
+                            style: AppTextStyles.labelSmall.copyWith(
+                              fontFamily: isPrivacyMode ? 'Courier' : null,
+                            ),
                           ),
                         ],
                       ),
@@ -198,8 +270,10 @@ class SummaryCardWidget extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            itemCount.toString(),
-                            style: AppTextStyles.labelSmall,
+                            isPrivacyMode ? '•' : itemCount.toString(),
+                            style: AppTextStyles.labelSmall.copyWith(
+                              fontFamily: isPrivacyMode ? 'Courier' : null,
+                            ),
                           ),
                         ],
                       ),
@@ -215,21 +289,28 @@ class SummaryCardWidget extends StatelessWidget {
   }
 
   Widget _buildStatItem(String label, String value, Color color) {
+    // Hide label in privacy mode to avoid revealing profit/loss status
+    final hideLabel = value.contains('•');
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: Colors.white54,
-              letterSpacing: 0.5,
+          if (!hideLabel)
+            Text(
+              label,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: Colors.white54,
+                letterSpacing: 0.5,
+              ),
             ),
-          ),
           SizedBox(height: 2),
           Text(
             value,
-            style: AppTextStyles.priceSmall.copyWith(color: color),
+            style: AppTextStyles.priceSmall.copyWith(
+              color: color,
+              fontFamily: value.contains('•') ? 'Courier' : null,
+            ),
           ),
         ],
       ),

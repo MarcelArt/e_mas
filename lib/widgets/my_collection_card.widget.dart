@@ -7,8 +7,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 class MyCollectionCardWidget extends StatefulWidget {
   final GoldPrice latestGoldPrice;
+  final bool isPrivacyMode;
 
-  const MyCollectionCardWidget({super.key, required this.latestGoldPrice});
+  const MyCollectionCardWidget({
+    super.key,
+    required this.latestGoldPrice,
+    this.isPrivacyMode = false,
+  });
 
   @override
   State<MyCollectionCardWidget> createState() => _MyCollectionCardWidgetState();
@@ -95,6 +100,11 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
         ValueListenableBuilder(
           valueListenable: collectionBox.listenable(),
           builder: (context, value, _) {
+            // Show privacy state when enabled
+            if (widget.isPrivacyMode) {
+              return _buildPrivacyState();
+            }
+
             if (value.isEmpty) {
               return _buildEmptyState();
             }
@@ -130,6 +140,7 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
                   weight: collection?.weight ?? 0,
                   index: index,
                   buyBackPrice: buyBackPrice,
+                  isPrivacyMode: widget.isPrivacyMode,
                 );
               },
             );
@@ -182,6 +193,43 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
               style: AppTextStyles.label,
             ),
             style: AppButtonStyles.goldButtonSmall,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPrivacyState() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      padding: EdgeInsets.all(AppSpacing.xl),
+      decoration: AppDecorations.cardDecorationPlain().copyWith(
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.3), width: 2),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.gold.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.lock_outline,
+              size: 48,
+              color: AppColors.gold,
+            ),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          Text(
+            'Portfolio Hidden',
+            style: AppTextStyles.headingMedium,
+          ),
+          SizedBox(height: AppSpacing.sm),
+          Text(
+            'Your gold collection is currently hidden.\nTap the eye icon in the summary card to show.',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMedium.copyWith(height: 1.5),
           ),
         ],
       ),
