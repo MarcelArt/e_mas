@@ -130,41 +130,54 @@ class AppTextStyles {
 class AppDecorations {
   AppDecorations._();
 
+  // Cached decorations for better performance
+  static final BoxDecoration _cachedCardDecoration = BoxDecoration(
+    gradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        AppColors.cardBackground,
+        AppColors.cardBackgroundAlt,
+      ],
+    ),
+    borderRadius: BorderRadius.circular(16),
+    border: Border.all(
+      color: AppColors.border,
+      width: 1,
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Color(0xFF000000).withValues(alpha: 0.3),
+        blurRadius: 10,
+        offset: Offset(0, 4),
+      ),
+    ],
+  );
+
+  static final BoxDecoration _cachedCardDecorationPlain = BoxDecoration(
+    color: AppColors.cardBackground,
+    borderRadius: BorderRadius.circular(16),
+    border: Border.all(
+      color: AppColors.border,
+      width: 1,
+    ),
+  );
+
   // Card decorations
   static BoxDecoration cardDecoration({Color? color}) {
-    return BoxDecoration(
+    if (color == null) return _cachedCardDecoration;
+    return _cachedCardDecoration.copyWith(
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          color ?? AppColors.cardBackground,
-          AppColors.cardBackgroundAlt,
-        ],
+        colors: [color, AppColors.cardBackgroundAlt],
       ),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: AppColors.border,
-        width: 1,
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.3),
-          blurRadius: 10,
-          offset: Offset(0, 4),
-        ),
-      ],
     );
   }
 
   static BoxDecoration cardDecorationPlain({Color? color}) {
-    return BoxDecoration(
-      color: color ?? AppColors.cardBackground,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: AppColors.border,
-        width: 1,
-      ),
-    );
+    if (color == null) return _cachedCardDecorationPlain;
+    return _cachedCardDecorationPlain.copyWith(color: color);
   }
 
   // Input decoration

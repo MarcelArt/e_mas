@@ -3,7 +3,7 @@ import 'package:e_mas/utils/app_theme.dart';
 import 'package:e_mas/utils/currency.dart';
 import 'package:flutter/material.dart';
 
-class PriceTableView extends StatelessWidget {
+class PriceTableView extends StatefulWidget {
   final String brand;
   final GoldPrice goldPrice;
 
@@ -14,10 +14,26 @@ class PriceTableView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    // Get prices for the selected brand
-    final prices = _getBrandPrices();
+  State<PriceTableView> createState() => _PriceTableViewState();
+}
 
+class _PriceTableViewState extends State<PriceTableView> {
+  // Cache the sorted prices list to avoid recomputing on every build
+  late final List<String> _prices;
+  // Cache price maps for faster lookup
+  late final Map<String, int> _buyPrices;
+  late final Map<String, int> _buybackPrices;
+
+  @override
+  void initState() {
+    super.initState();
+    _prices = _getBrandPrices();
+    _buyPrices = _getPriceMap(true);
+    _buybackPrices = _getPriceMap(false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -36,14 +52,16 @@ class PriceTableView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
-                brand.toLowerCase() == 'ubs' ? Icons.monetization_on : Icons.diamond,
+                widget.brand.toLowerCase() == 'ubs'
+                    ? Icons.monetization_on
+                    : Icons.diamond,
                 color: AppColors.gold,
                 size: 18,
               ),
             ),
             SizedBox(width: 12),
             Text(
-              '$brand Price List',
+              '${widget.brand} Price List',
               style: AppTextStyles.headingSmall,
             ),
           ],
@@ -51,27 +69,83 @@ class PriceTableView extends StatelessWidget {
       ),
       body: ListView.separated(
         padding: EdgeInsets.all(AppSpacing.md),
-        itemCount: prices.length,
+        itemCount: _prices.length,
         separatorBuilder: (context, index) => SizedBox(height: AppSpacing.sm),
         itemBuilder: (context, index) {
-          final weight = prices[index];
-          final buyPrice = _getBuyPrice(weight);
-          final buybackPrice = _getBuybackPrice(weight);
+          final weight = _prices[index];
+          final buyPrice = _buyPrices[weight] ?? 0;
+          final buybackPrice = _buybackPrices[weight] ?? 0;
 
-          return _buildPriceRow(weight, buyPrice, buybackPrice);
+          return _PriceRow(
+            weight: weight,
+            buyPrice: buyPrice,
+            buybackPrice: buybackPrice,
+          );
         },
       ),
     );
   }
 
-  Widget _buildPriceRow(String weight, int buyPrice, int buybackPrice) {
+  List<String> _getBrandPrices() {
+    final brandKey = widget.brand.toLowerCase();
+    final buyPrices = brandKey == 'ubs'
+        ? widget.goldPrice.buy.ubs
+        : widget.goldPrice.buy.antam;
+
+    final weights = buyPrices.keys.toList();
+    weights.sort((a, b) {
+      final aDouble = double.tryParse(a) ?? 0;
+      final bDouble = double.tryParse(b) ?? 0;
+      return aDouble.compareTo(bDouble);
+    });
+
+    return weights;
+  }
+
+  Map<String, int> _getPriceMap(bool isBuy) {
+    final brandKey = widget.brand.toLowerCase();
+    if (isBuy) {
+      return brandKey == 'ubs'
+          ? widget.goldPrice.buy.ubs
+          : widget.goldPrice.buy.antam;
+    } else {
+      return brandKey == 'ubs'
+          ? widget.goldPrice.buyBack.ubs
+          : widget.goldPrice.buyBack.antam;
+    }
+  }
+}
+
+/// Extracted as separate widget for better performance
+class _PriceRow extends StatelessWidget {
+  final String weight;
+  final int buyPrice;
+  final int buybackPrice;
+
+  const _PriceRow({
+    required this.weight,
+    required this.buyPrice,
+    required this.buybackPrice,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final profit = buybackPrice - buyPrice;
     final profitPercentage = buyPrice > 0 ? (profit / buyPrice) * 100 : 0.0;
 
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
-      decoration: AppDecorations.cardDecoration().copyWith(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.cardBackground,
+            AppColors.cardBackgroundAlt,
+          ],
+        ),
         borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+        border: Border.all(color: AppColors.border, width: 1),
       ),
       child: Column(
         children: [
@@ -92,18 +166,30 @@ class PriceTableView extends StatelessWidget {
                 ),
               ),
               Spacer(),
-              _buildPriceChip('Spread', '${profitPercentage.abs().toStringAsFixed(2)}%', Colors.white54),
+              _PriceChip(
+                label: 'Spread',
+                value: '${profitPercentage.abs().toStringAsFixed(2)}%',
+                color: Colors.white54,
+              ),
             ],
           ),
           SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               Expanded(
-                child: _buildPriceColumn('Buy', buyPrice, AppColors.info),
+                child: _PriceColumn(
+                  label: 'Buy',
+                  price: buyPrice,
+                  color: AppColors.info,
+                ),
               ),
               SizedBox(width: AppSpacing.sm),
               Expanded(
-                child: _buildPriceColumn('Buyback', buybackPrice, AppColors.success),
+                child: _PriceColumn(
+                  label: 'Buyback',
+                  price: buybackPrice,
+                  color: AppColors.success,
+                ),
               ),
             ],
           ),
@@ -111,8 +197,21 @@ class PriceTableView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildPriceColumn(String label, int price, Color color) {
+class _PriceColumn extends StatelessWidget {
+  final String label;
+  final int price;
+  final Color color;
+
+  const _PriceColumn({
+    required this.label,
+    required this.price,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
@@ -140,8 +239,21 @@ class PriceTableView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildPriceChip(String label, String value, Color color) {
+class _PriceChip extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _PriceChip({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -156,38 +268,5 @@ class PriceTableView extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  List<String> _getBrandPrices() {
-    // Get all unique weights for the brand, sorted
-    final brandKey = brand.toLowerCase();
-    final Map<String, int>? buyPrices =
-        brandKey == 'ubs' ? goldPrice.buy.ubs : goldPrice.buy.antam;
-
-    if (buyPrices == null) return [];
-
-    // Sort weights: numeric sort (0.1, 0.25, 0.5, 1, 2, 3, etc.)
-    final weights = buyPrices.keys.toList();
-    weights.sort((a, b) {
-      final aDouble = double.tryParse(a) ?? 0;
-      final bDouble = double.tryParse(b) ?? 0;
-      return aDouble.compareTo(bDouble);
-    });
-
-    return weights;
-  }
-
-  int _getBuyPrice(String weight) {
-    final brandKey = brand.toLowerCase();
-    final Map<String, int> buyPrices =
-        brandKey == 'ubs' ? goldPrice.buy.ubs : goldPrice.buy.antam;
-    return buyPrices[weight] ?? 0;
-  }
-
-  int _getBuybackPrice(String weight) {
-    final brandKey = brand.toLowerCase();
-    final Map<String, int> buybackPrices =
-        brandKey == 'ubs' ? goldPrice.buyBack.ubs : goldPrice.buyBack.antam;
-    return buybackPrices[weight] ?? 0;
   }
 }
