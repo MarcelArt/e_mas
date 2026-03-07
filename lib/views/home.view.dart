@@ -3,6 +3,7 @@ import 'package:e_mas/models/collection.model.dart';
 import 'package:e_mas/models/gold_price.model.dart';
 import 'package:e_mas/repos/collection.repo.dart';
 import 'package:e_mas/utils/app_theme.dart';
+import 'package:e_mas/widgets/gold_price_carousel.widget.dart';
 import 'package:e_mas/widgets/my_collection_card.widget.dart';
 import 'package:e_mas/widgets/summary_card.widget.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,24 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final collectionsBox = Hive.box<Collection>('collections');
 
+    final antamBuy = latestGoldPrice?.buy.antam['1'];
+    final ubsBuy = latestGoldPrice?.buy.ubs['1'];
+    final antamBuyBack = latestGoldPrice?.buyBack.antam['1'];
+    final ubsBuyBack = latestGoldPrice?.buyBack.ubs['1'];
+
+    BrandPrice antamPrice = BrandPrice(
+      brand: 'Antam',
+      buyPrice: antamBuy ?? 0,
+      buybackPrice: antamBuyBack ?? 0,
+      icon: Icons.diamond,
+    );
+    BrandPrice ubsPrice = BrandPrice(
+      brand: 'UBS',
+      buyPrice: ubsBuy ?? 0,
+      buybackPrice: ubsBuyBack ?? 0,
+      icon: Icons.monetization_on,
+    );
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -96,6 +115,9 @@ class _HomeViewState extends State<HomeView> {
                               );
                             },
                           ),
+                          SizedBox(height: AppSpacing.md),
+                          // Gold price carousel with dummy data
+                          GoldPriceCarouselWidget(prices: [antamPrice, ubsPrice]),
                           SizedBox(height: AppSpacing.md),
                           if (latestGoldPrice != null)
                             MyCollectionCardWidget(latestGoldPrice: latestGoldPrice!),
