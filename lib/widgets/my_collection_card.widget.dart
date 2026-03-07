@@ -187,7 +187,7 @@ class _MyCollectionCardWidgetState extends State<MyCollectionCardWidget> {
             onPressed: () {
               Navigator.pushNamed(context, '/add-gold');
             },
-            icon: Icon(Icons.add, size: 18),
+            icon: Icon(Icons.add, size: 18, color: AppColors.textPrimary),
             label: Text(
               'Add First Gold',
               style: AppTextStyles.label,
