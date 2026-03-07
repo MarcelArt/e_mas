@@ -8,6 +8,7 @@ import 'package:e_mas/widgets/my_collection_card.widget.dart';
 import 'package:e_mas/widgets/summary_card.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -22,10 +23,39 @@ class _HomeViewState extends State<HomeView> {
   String? errorMessage;
   bool _isPrivacyMode = false;
 
+  // Key for storing privacy mode preference
+  static const String _privacyModeKey = 'privacy_mode';
+
   @override
   void initState() {
     super.initState();
     _fetchLatestGoldPrice();
+    _loadPrivacyMode();
+  }
+
+  Future<void> _loadPrivacyMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final privacyMode = prefs.getBool(_privacyModeKey) ?? false;
+    if (mounted) {
+      setState(() {
+        _isPrivacyMode = privacyMode;
+      });
+    }
+  }
+
+  Future<void> _savePrivacyMode(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_privacyModeKey, value);
+  }
+
+  Future<void> _togglePrivacyMode() async {
+    final newValue = !_isPrivacyMode;
+    await _savePrivacyMode(newValue);
+    if (mounted) {
+      setState(() {
+        _isPrivacyMode = newValue;
+      });
+    }
   }
 
   Future<void> _fetchLatestGoldPrice() async {
@@ -96,11 +126,7 @@ class _HomeViewState extends State<HomeView> {
                                 profitPercentage: profitPercentage,
                                 itemCount: value.length,
                                 isPrivacyMode: _isPrivacyMode,
-                                onPrivacyToggle: () {
-                                  setState(() {
-                                    _isPrivacyMode = !_isPrivacyMode;
-                                  });
-                                },
+                                onPrivacyToggle: _togglePrivacyMode,
                               );
                             },
                           ),
