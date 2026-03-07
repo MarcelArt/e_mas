@@ -18,17 +18,18 @@ class _AddGoldViewState extends State<AddGoldView> {
   String brand = list.first;
   double weight = 0;
   int price = 0;
+  DateTime? purchaseDate;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future _createCollection() async {
-    final now = DateTime.now();
+    final selectedDate = purchaseDate ?? DateTime.now();
     await createCollection(
       Collection(
         brand: brand,
         weight: weight,
         price: price,
-        purchaseDate: DateFormat('dd MMM yyyy').format(now),
+        purchaseDate: DateFormat('dd MMM yyyy').format(selectedDate),
       ),
     );
     if (mounted) Navigator.pop(context);
@@ -69,6 +70,8 @@ class _AddGoldViewState extends State<AddGoldView> {
               ),
               SizedBox(height: AppSpacing.lg),
               _buildBrandDropdown(),
+              SizedBox(height: AppSpacing.md),
+              _buildDatePicker(),
               SizedBox(height: AppSpacing.md),
               _buildTextField(
                 label: 'Weight (grams)',
@@ -209,6 +212,54 @@ class _AddGoldViewState extends State<AddGoldView> {
           keyboardType: keyboardType,
           validator: validator,
           onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDatePicker() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Purchase Date', style: AppTextStyles.label),
+        SizedBox(height: AppSpacing.sm),
+        InkWell(
+          onTap: () async {
+            final DateTime? picked = await showDatePicker(
+              context: context,
+              initialDate: purchaseDate ?? DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime.now(),
+            );
+            if (picked != null) {
+              setState(() {
+                purchaseDate = picked;
+              });
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
+            ),
+            decoration: AppDecorations.cardDecorationPlain(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  purchaseDate == null
+                      ? 'Select purchase date'
+                      : DateFormat('dd MMM yyyy').format(purchaseDate!),
+                  style: AppTextStyles.label.copyWith(
+                    color: purchaseDate == null
+                        ? AppColors.textSecondary
+                        : AppColors.textPrimary,
+                  ),
+                ),
+                Icon(Icons.calendar_today, color: AppColors.gold),
+              ],
+            ),
+          ),
         ),
       ],
     );
