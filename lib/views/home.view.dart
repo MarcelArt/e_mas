@@ -52,24 +52,6 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final collectionsBox = Hive.box<Collection>('collections');
 
-    final antamBuy = latestGoldPrice?.buy.antam['1'];
-    final ubsBuy = latestGoldPrice?.buy.ubs['1'];
-    final antamBuyBack = latestGoldPrice?.buyBack.antam['1'];
-    final ubsBuyBack = latestGoldPrice?.buyBack.ubs['1'];
-
-    BrandPrice antamPrice = BrandPrice(
-      brand: 'Antam',
-      buyPrice: antamBuy ?? 0,
-      buybackPrice: antamBuyBack ?? 0,
-      icon: Icons.diamond,
-    );
-    BrandPrice ubsPrice = BrandPrice(
-      brand: 'UBS',
-      buyPrice: ubsBuy ?? 0,
-      buybackPrice: ubsBuyBack ?? 0,
-      icon: Icons.monetization_on,
-    );
-
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -116,8 +98,9 @@ class _HomeViewState extends State<HomeView> {
                             },
                           ),
                           SizedBox(height: AppSpacing.md),
-                          // Gold price carousel with dummy data
-                          GoldPriceCarouselWidget(prices: [antamPrice, ubsPrice]),
+                          // Gold price carousel
+                          if (latestGoldPrice != null)
+                            GoldPriceCarouselWidget(goldPrice: latestGoldPrice!),
                           SizedBox(height: AppSpacing.md),
                           if (latestGoldPrice != null)
                             MyCollectionCardWidget(latestGoldPrice: latestGoldPrice!),
@@ -180,7 +163,7 @@ class _HomeViewState extends State<HomeView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: 60,
             height: 60,
             child: CircularProgressIndicator(

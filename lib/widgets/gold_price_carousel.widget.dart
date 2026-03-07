@@ -1,17 +1,22 @@
+import 'package:e_mas/models/gold_price.model.dart';
 import 'package:e_mas/utils/app_theme.dart';
 import 'package:e_mas/utils/currency.dart';
+import 'package:e_mas/views/price_table.view.dart';
 import 'package:flutter/material.dart';
 
 class GoldPriceCarouselWidget extends StatelessWidget {
-  final List<BrandPrice> prices;
+  final GoldPrice goldPrice;
 
   const GoldPriceCarouselWidget({
     super.key,
-    required this.prices,
+    required this.goldPrice,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Build price list from goldPrice data
+    final prices = _buildPricesFromData();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -55,7 +60,7 @@ class GoldPriceCarouselWidget extends StatelessWidget {
             itemCount: prices.length,
             itemBuilder: (context, index) {
               final price = prices[index];
-              return _buildPriceCard(price);
+              return _buildPriceCard(context, price);
             },
           ),
         ),
@@ -63,56 +68,79 @@ class GoldPriceCarouselWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPriceCard(BrandPrice price) {
-    return Container(
-      width: 200,
-      margin: EdgeInsets.only(right: AppSpacing.sm),
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 10),
-      decoration: AppDecorations.cardDecoration().copyWith(
-        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.gold.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              price.icon,
-              color: AppColors.gold,
-              size: 18,
+  Widget _buildPriceCard(BuildContext context, BrandPrice price) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PriceTableView(
+              brand: price.brand,
+              goldPrice: goldPrice,
             ),
           ),
-          SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  price.brand,
-                  style: AppTextStyles.labelSmall.copyWith(
-                    fontSize: 12,
+        );
+      },
+      child: Container(
+        width: 200,
+        margin: EdgeInsets.only(right: AppSpacing.sm),
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 10),
+        decoration: AppDecorations.cardDecoration().copyWith(
+          borderRadius: BorderRadius.circular(AppBorderRadius.medium),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.gold.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                price.icon,
+                color: AppColors.gold,
+                size: 18,
+              ),
+            ),
+            SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        price.brand,
+                        style: AppTextStyles.labelSmall.copyWith(
+                          fontSize: 12,
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Icon(
+                        Icons.chevron_right,
+                        size: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(height: 4),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildPriceChip('Buy', price.buyPrice, AppColors.info),
-                    ),
-                    SizedBox(width: 6),
-                    Expanded(
-                      child: _buildPriceChip('Back', price.buybackPrice, AppColors.success),
-                    ),
-                  ],
-                ),
-              ],
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildPriceChip('Buy', price.buyPrice, AppColors.info),
+                      ),
+                      SizedBox(width: 6),
+                      Expanded(
+                        child: _buildPriceChip('Back', price.buybackPrice, AppColors.success),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -137,6 +165,24 @@ class GoldPriceCarouselWidget extends StatelessWidget {
       ),
     );
   }
+
+  /// Build prices from API data for 1 gram
+  List<BrandPrice> _buildPricesFromData() {
+    return [
+      BrandPrice(
+        brand: 'UBS',
+        icon: Icons.monetization_on,
+        buyPrice: goldPrice.buy.ubs['1'] ?? 0,
+        buybackPrice: goldPrice.buyBack.ubs['1'] ?? 0,
+      ),
+      BrandPrice(
+        brand: 'Antam',
+        icon: Icons.diamond,
+        buyPrice: goldPrice.buy.antam['1'] ?? 0,
+        buybackPrice: goldPrice.buyBack.antam['1'] ?? 0,
+      ),
+    ];
+  }
 }
 
 /// Model for brand price data
@@ -153,31 +199,3 @@ class BrandPrice {
     required this.buybackPrice,
   });
 }
-
-/// Dummy data for testing
-List<BrandPrice> dummyGoldPrices = [
-  BrandPrice(
-    brand: 'UBS',
-    icon: Icons.monetization_on,
-    buyPrice: 1250000,
-    buybackPrice: 1180000,
-  ),
-  BrandPrice(
-    brand: 'Antam',
-    icon: Icons.diamond,
-    buyPrice: 1240000,
-    buybackPrice: 1175000,
-  ),
-  BrandPrice(
-    brand: 'Antam',
-    icon: Icons.diamond,
-    buyPrice: 625000,
-    buybackPrice: 595000,
-  ),
-  BrandPrice(
-    brand: 'UBS',
-    icon: Icons.monetization_on,
-    buyPrice: 630000,
-    buybackPrice: 600000,
-  ),
-];
