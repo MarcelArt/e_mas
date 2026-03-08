@@ -1,8 +1,37 @@
 import 'package:e_mas/utils/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        _packageInfo = info;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +49,7 @@ class SettingsView extends StatelessWidget {
           _buildSettingCard(
             icon: Icons.info_outline,
             title: 'App Version',
-            subtitle: '0.1.0',
+            subtitle: _packageInfo.version,
             onTap: () {},
           ),
           SizedBox(height: AppSpacing.md),
