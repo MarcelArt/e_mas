@@ -168,25 +168,39 @@ class _HomeViewState extends State<HomeView> {
               ),
             ],
           ),
-          Container(
-            padding: EdgeInsets.all(10),
-            decoration: AppDecorations.cardDecorationPlain(),
-            child: Row(
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: AppColors.success,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                SizedBox(width: 6),
-                Text(
-                  'Live',
-                  style: AppTextStyles.labelSmall,
-                ),
-              ],
+          // Container(
+          //   padding: EdgeInsets.all(10),
+          //   decoration: AppDecorations.cardDecorationPlain(),
+          //   child: Row(
+          //     children: [
+          //       Container(
+          //         width: 8,
+          //         height: 8,
+          //         decoration: BoxDecoration(
+          //           color: AppColors.success,
+          //           shape: BoxShape.circle,
+          //         ),
+          //       ),
+          //       SizedBox(width: 6),
+          //       Text(
+          //         'Live',
+          //         style: AppTextStyles.labelSmall,
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // SizedBox(width: AppSpacing.sm),
+          InkWell(
+            onTap: () => Navigator.pushNamed(context, '/settings'),
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              padding: EdgeInsets.all(10),
+              decoration: AppDecorations.cardDecorationPlain(),
+              child: Icon(
+                Icons.settings_outlined,
+                size: 18,
+                color: AppColors.textSecondary,
+              ),
             ),
           ),
         ],

@@ -1,7 +1,9 @@
 import 'package:e_mas/models/collection.model.dart';
 import 'package:e_mas/utils/app_theme.dart';
 import 'package:e_mas/views/add_gold.view.dart';
+import 'package:e_mas/views/attributions.view.dart';
 import 'package:e_mas/views/home.view.dart';
+import 'package:e_mas/views/settings.view.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -48,6 +50,8 @@ class MainApp extends StatelessWidget {
       routes: {
         '/': (context) => HomeView(),
         '/add-gold': (context) => AddGoldView(),
+        '/settings': (context) => SettingsView(),
+        '/attributions': (context) => AttributionsView(),
       },
       // Enable proper back navigation
       onGenerateRoute: (settings) {
@@ -57,6 +61,10 @@ class MainApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => HomeView());
           case '/add-gold':
             return MaterialPageRoute(builder: (_) => AddGoldView());
+          case '/settings':
+            return MaterialPageRoute(builder: (_) => SettingsView());
+          case '/attributions':
+            return MaterialPageRoute(builder: (_) => AttributionsView());
           default:
             return MaterialPageRoute(
               builder: (_) => Scaffold(
