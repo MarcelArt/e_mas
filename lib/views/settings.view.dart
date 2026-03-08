@@ -1,5 +1,4 @@
 import 'package:e_mas/utils/app_theme.dart';
-import 'package:e_mas/views/attributions.view.dart';
 import 'package:flutter/material.dart';
 
 class SettingsView extends StatelessWidget {
