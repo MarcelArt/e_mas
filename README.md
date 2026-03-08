@@ -1,4 +1,4 @@
-# E-Mas
+# Auregia
 
 A Flutter mobile app for tracking gold investment portfolios. Track your UBS, Antam, or other brand gold purchases and monitor current market values with live gold price data.
 

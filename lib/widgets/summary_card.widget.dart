@@ -50,7 +50,7 @@ class SummaryCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "E-Mas",
+                      "Auregia",
                       style: AppTextStyles.headingLarge.copyWith(
                         fontSize: 28,
                         letterSpacing: 1,

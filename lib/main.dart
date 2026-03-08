@@ -21,7 +21,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'E-Mas',
+      title: 'Auregia',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,

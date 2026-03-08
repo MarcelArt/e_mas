@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-E-Mas is a Flutter mobile app for tracking gold investment portfolios. It allows users to add gold purchases (UBS, Antam, or other brands), track buy prices, and monitor current market values using live gold price data.
+Auregia is a Flutter mobile app for tracking gold investment portfolios. It allows users to add gold purchases (UBS, Antam, or other brands), track buy prices, and monitor current market values using live gold price data.
 
 ## Development Commands
 

@@ -163,7 +163,7 @@ class _HomeViewState extends State<HomeView> {
               ),
               SizedBox(height: 2),
               Text(
-                'E-Mas Portfolio',
+                'Auregia Portfolio',
                 style: AppTextStyles.headingLarge,
               ),
             ],
