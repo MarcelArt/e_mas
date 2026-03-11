@@ -83,6 +83,17 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final collectionsBox = Hive.box<Collection>('collections');
 
+    // Debug: Print box size on each build
+    debugPrint('🏠 HomeView building - Box has ${collectionsBox.length} items');
+
+    // Debug: Print all items if box is not empty
+    if (collectionsBox.isNotEmpty) {
+      for (var i = 0; i < collectionsBox.length; i++) {
+        final item = collectionsBox.getAt(i);
+        debugPrint('  📦 Item $i: ${item?.brand} ${item?.weight}g');
+      }
+    }
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -109,6 +120,7 @@ class _HomeViewState extends State<HomeView> {
                           ValueListenableBuilder(
                             valueListenable: collectionsBox.listenable(),
                             builder: (context, value, child) {
+                              debugPrint('🔄 ValueListenableBuilder triggered - ${value.length} items');
                               final total = getTotalWeight(collectionsBox: value);
                               final totalValue = getTotalValue(collectionsBox: value);
                               final currentValue = getCurrentValue(

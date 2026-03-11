@@ -1,9 +1,11 @@
 import 'package:e_mas/models/collection.model.dart';
+import 'package:e_mas/seed/collection_seeder.dart';
 import 'package:e_mas/utils/app_theme.dart';
 import 'package:e_mas/views/add_gold.view.dart';
 import 'package:e_mas/views/attributions.view.dart';
 import 'package:e_mas/views/home.view.dart';
 import 'package:e_mas/views/settings.view.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -13,7 +15,15 @@ void main() async {
 
   Hive.registerAdapter(CollectionAdapter());
   await Hive.openBox<Collection>('collections');
-  // if (kDebugMode) seedCollection();
+
+  debugPrint('🔧 Debug mode: $kDebugMode');
+  if (kDebugMode) {
+    debugPrint('🌱 Calling seedCollection...');
+    await seedCollection();
+  } else {
+    debugPrint('🚀 Release mode - skipping seed');
+  }
+
   runApp(const MainApp());
 }
 
