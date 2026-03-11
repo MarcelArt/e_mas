@@ -1,4 +1,4 @@
-name: Build Flutter
+name: Build (Manual) Flutter
 on:
   workflow_dispatch:
     inputs:
